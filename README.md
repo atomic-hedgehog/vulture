@@ -1,6 +1,9 @@
 # vulture
 
-The project uses [Midje](https://github.com/marick/Midje/).
+Vulture is log file analyzer that can be used to gather statistics and other information from log files.
+
+
+This project uses [Midje](https://github.com/marick/Midje/).
 
 ## How to run the tests
 
