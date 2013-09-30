@@ -5,14 +5,14 @@
   If only a regex is supplied, the output will contain counts named by the matched regex (or the last capture group in the regex).  These counts will not be present unless there is at least one match in the file"
   ([regex]
    (fn [line]
-    (let [match (re-find regex line)]
+    (let [match (re-find (re-pattern regex) line)]
       (cond 
         (vector? match) {(last match) 1} 
         match {match 1}
         :else nil))))
   ([processor-key regex]
    (fn [line]
-    (let [match? (re-find regex line)]
+    (let [match? (re-find (re-pattern regex) line)]
       (if match?
         {processor-key 1} 
         {processor-key 0})))))
@@ -37,3 +37,15 @@
               (merge-with + results combined-map)))
           {}
           lines))
+
+(defn build-counter-from-config [processor-from-config]
+  (cond
+    (map? processor-from-config) (apply generate-counter (first processor-from-config))
+    :else (generate-counter processor-from-config)))
+
+(defn build-processors! [processors-atom processor-list]
+  (doseq [processor processor-list]
+    (let [proc-fn (build-counter-from-config processor)]
+      (add-processor! processors-atom proc-fn))))
+
+
